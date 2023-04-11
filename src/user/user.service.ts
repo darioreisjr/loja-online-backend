@@ -1,34 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dtos/createUser.dto';
-import { User } from './interfaces/user.interface';
+import { UserEntity } from './interfaces/user.entity';
 import { hash } from 'bcrypt';
-import { promises } from 'dns';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 
 @Injectable()
 export class UserService {
 
-    private users: User[] = []
+    constructor(
+        @InjectRepository(UserEntity)
+        private readonly useRepository: Repository<UserEntity>
+    ) { }
 
-    async createUser(createUserDto: CreateUserDto): Promise<User> {
+    async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
 
         const saltOrRounds = 10;
         const passwordHashed = await hash(createUserDto.password, saltOrRounds);
 
-        const user: User = {
+        return this.useRepository.save({
             ...createUserDto,
-            id: this.users.length + 1,
             password: passwordHashed,
-        }
-
-        this.users.push(user)
-
-        console.log('passwordHashed', passwordHashed)
-
-        return user
+        })
     }
 
-    async getAllUser(): Promise<User[]>{
-        return this.users
+    async getAllUser(): Promise<UserEntity[]> {
+        return this.useRepository.find()
     }
 }
