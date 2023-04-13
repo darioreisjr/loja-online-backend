@@ -20,7 +20,7 @@ import { AddressModule } from './address/address.module';
       username: process.env.DB_USERNAME,
       entities: [`${__dirname}/**/*.entity{.js,.ts}`],
       migrations: [`${__dirname}/migration/{.ts,*.js}`],
-      migrationsRun:true,
+      migrationsRun: true,
     }),
     UserModule,
     StateModule,
@@ -30,4 +30,4 @@ import { AddressModule } from './address/address.module';
   controllers: [],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
